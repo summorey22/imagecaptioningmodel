@@ -1,0 +1,9 @@
+*.jpg
+*.json
+
+/annotations_trainval2017
+/torch_model
+/train2017
+/val2017
+/v2_image_captioning
+
