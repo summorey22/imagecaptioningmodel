@@ -35,6 +35,7 @@ ENCODER = args.encode
 DECODER = args.decode
 EPOCHS = args.epochs
 SIZE = args.size
+N_SAMPLES = args.samples
 SAVE_PATH = args.o or f'./ckpts_{datetime.now().strftime("%d%m%Y%H%M%S")}'
 
 print('Downloading Pretrained Models')
@@ -73,6 +74,7 @@ count = 0
 for image in annotations['images']:
     image_id = image['id']
     filename = os.path.join(IMAGES_PATH, image['file_name'])
+    print(SIZE)
     if image_id in captions_by_image_id:
         captions = captions_by_image_id[image_id]
         for k in captions:
@@ -84,7 +86,7 @@ for image in annotations['images']:
           rows.append(data)
           break
     count += 1
-    if count == SIZE:
+    if count == N_SAMPLES:
       break
 
 # Create the DataFrame
