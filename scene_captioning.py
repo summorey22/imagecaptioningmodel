@@ -9,7 +9,7 @@ warnings.filterwarnings('ignore')
 
 gpt2_tokenizer = GPT2TokenizerFast.from_pretrained('distilgpt2')
 feature_extractor = AutoFeatureExtractor.from_pretrained('google/vit-base-patch16-224-in21k')
-finetuned_model = VisionEncoderDecoderModel.from_pretrained('./torch_model')
+finetuned_model = VisionEncoderDecoderModel.from_pretrained('./ckpts_05052023132058')
 
 inference_compose = Compose([
     Resize((224, 224)),

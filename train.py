@@ -6,6 +6,7 @@ import pandas as pd
 import json
 import argparse
 import os
+from datetime import datetime
 import warnings
 
 # Ignore warnings
@@ -21,9 +22,12 @@ parser.add_argument('--p', type=str, default='./data/train2017', help='Path to t
 parser.add_argument('--a', type=str, default='./data/annotations_trainval2017/annotations/captions_train2017.json', help='Path to the training annotations file')
 parser.add_argument('--encode', type=str, default='google/vit-base-patch16-224-in21k', help='Encoder model to use')
 parser.add_argument('--decode', type=str, default='distilgpt2', help='Decoder model to use')
-parser.add_argument('--size', type=int, default=1000, help='Number of images to train on')
+parser.add_argument('--samples', type=int, default=1000, help='Number of images to train on')
+parser.add_argument('--size', type=int, default=64, help='Batch size for training')
+parser.add_argument('--o', type=str, help='Path to save the model')
 args = parser.parse_args()
 
+# Define the constants
 IMAGES_PATH = args.p
 ANN_PATH = args.a
 MIN_CAPTION, MAX_CAPTION = 10, 50
@@ -31,6 +35,7 @@ ENCODER = args.encode
 DECODER = args.decode
 EPOCHS = args.epochs
 SIZE = args.size
+SAVE_PATH = args.o or f'./ckpts_{datetime.now().strftime("%d%m%Y%H%M%S")}'
 
 print('Downloading Pretrained Models')
 # Define the model
@@ -40,7 +45,7 @@ model = VisionEncoderDecoderModel.from_encoder_decoder_pretrained(
 )
 
 # Define the tokenizer
-print('Downloading Tokenizers')
+print('Downloading Tokenizers') 
 gpt2_tokenizer = GPT2TokenizerFast.from_pretrained(DECODER)
 
 # Define the feature extractor
@@ -141,7 +146,7 @@ for name, param in model.encoder.named_parameters():
 
 # Create the TrainingArguments
 training_args = TrainingArguments(
-    output_dir = './modelcheckpoints',
+    output_dir = SAVE_PATH,
     overwrite_output_dir = True,
     num_train_epochs = EPOCHS,
     per_device_train_batch_size = 64,
@@ -170,4 +175,4 @@ trainer.train()
 
 print('Saving the model')
 trainer.save_model()
-print('Model saved at ./modelcheckpoints')
+print(f'Model saved at {SAVE_PATH}')
