@@ -74,7 +74,6 @@ count = 0
 for image in annotations['images']:
     image_id = image['id']
     filename = os.path.join(IMAGES_PATH, image['file_name'])
-    print(SIZE)
     if image_id in captions_by_image_id:
         captions = captions_by_image_id[image_id]
         for k in captions:
